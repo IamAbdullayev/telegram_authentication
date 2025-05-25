@@ -17,24 +17,38 @@ import java.util.Map;
 public class TelegramAuthController {
     private final TelegramAuthService telegramAuthService;
     @PostMapping("/auth/telegram")
-    public ResponseEntity<TelegramUser> authenticateWithTelegram(@RequestParam("initData") String initData) {
+    public ResponseEntity<?> authenticateWithTelegram(@RequestParam("initData") String initData) {
         try {
             log.info(">> Получено initData: {}", initData);
             Map<String, String> userData = telegramAuthService.parseAndValidateInitData(initData);
             TelegramUser user = telegramAuthService.saveUserIfNotExists(userData);
 
             log.info("Response (user): {}", user);
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "id", user.getId(),
+                    "first_name", user.getFirstName(),
+                    "last_name", user.getLastName(),
+                    "username", user.getUsername()
+            ));
         } catch (SecurityException e) {
             log.error("SecurityException: ", e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-        catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                    "success", false,
+                    "message", "Ошибка безопасности: недействительные данные"
+            ));
+        } catch (RuntimeException e) {
             log.error("RuntimeException: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "success", false,
+                    "message", "Ошибка сервера"
+            ));
         } catch (Exception e) {
             log.error("Ошибка при аутентификации: ", e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                    "success", false,
+                    "message", "Ошибка запроса: неверные данные"
+            ));
         }
     }
 }

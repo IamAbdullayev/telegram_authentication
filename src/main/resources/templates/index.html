@@ -46,7 +46,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data && data.id) {
+                if (data && data.success) {
                     document.getElementById('status').style.display = 'none';
                     document.getElementById('user-info').style.display = 'block';
 
@@ -55,7 +55,7 @@
                     document.getElementById('user-lastname').textContent = data.last_name || '';
                     document.getElementById('user-username').textContent = data.username || '';
                 } else {
-                    document.getElementById('status').textContent = 'Ошибка аутентификации: ' + data.message;
+                    document.getElementById('status').textContent = 'Ошибка аутентификации: ' + (data.message || 'Неизвестная ошибка');
                 }
             })
             .catch(err => {
