@@ -21,10 +21,8 @@ public class TelegramAuthService {
     private String botToken;
 
     /* Validating data for Third-Party Use
-    * 1. Prepend the bot_id, followed by : and the constant string WebAppData.
-    * 2. Add a line feed character ('\n', 0x0A).
-    * 3. Append all received fields (except hash and signature), sorted alphabetically, in the format key=<value>.
-    * 4. Separate each key-value pair with a line feed character ('\n', 0x0A).
+    * Append all received fields (except hash and signature), sorted alphabetically, in the format key=<value>.
+    * Separate each key-value pair with a line feed character ('\n', 0x0A).
     *
     * (https://core.telegram.org/bots/webapps#validating-data-received-via-the-web-app)
     *

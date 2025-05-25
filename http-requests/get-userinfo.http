@@ -1,0 +1,10 @@
+### POST request to example server
+
+POST http://localhost:8080/auth/telegram
+
+Content-Type: application/x-www-form-urlencoded
+
+initData=id=auth_date=1685000000&user=%7B%22id%22%3A123456789%2C%22first_name%22%3A%22Ramazan%22%2C%22username%22%3A%22ramazan_bot%22%7D
+
+
+###

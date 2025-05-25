@@ -20,6 +20,16 @@
         .then(response => response.json())
         .then(responseData => {
             console.log("Ответ сервера:", responseData);
+
+            document.getElementById("user-info").innerHTML =
+                "<h2>Привет, " + responseData.firstName + "!</h2>" +
+                "<p>Username: @" + responseData.username + "</p>" +
+                "<p>ID: " + responseData.id + "</p>" +
+                (responseData.photoUrl ? "<img src='" + responseData.photoUrl + "' alt='avatar' width='100'/>" : "");
+
+        })
+        .catch(error => {
+            document.getElementById("user-info").innerText = "Ошибка при авторизации.";
         });
     </script>
 </body>
