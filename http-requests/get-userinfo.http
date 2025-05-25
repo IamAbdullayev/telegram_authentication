@@ -1,10 +1,15 @@
 ### POST request to example server
 
-POST http://localhost:8080/auth/telegram
+POST https://1adf-37-61-114-117.ngrok-free.app/auth/telegram
+Content-Type: application/json
 
-Content-Type: application/x-www-form-urlencoded
-
-initData=id=auth_date=1685000000&user=%7B%22id%22%3A123456789%2C%22first_name%22%3A%22Ramazan%22%2C%22username%22%3A%22ramazan_bot%22%7D
+{
+  "id": "4",
+  "auth_date": "1685000000",
+  "first_name": "Ramazan",
+  "username": "ramazan_bot",
+  "hash": "ВАШ_ХЭШ_ТУТ"
+}
 
 
 ###

@@ -8,9 +8,8 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
+import java.security.MessageDigest;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -29,38 +28,17 @@ public class TelegramAuthService {
     * */
 
     // Основной метод для проверки валидности initData (полученный от бота)
-    public Map<String, String> parseAndValidateInitData(String initData) {
-        // Парсинг...
+    public Map<String, String> parseAndValidateInitData(Map<String, String> initData) {
         // Удаляем ключ "hash" со значением (except hash ...)
         // Получаем строку, которую используем для проверки валидности initData
         // Проверяем на валидность
 
-        Map<String, String> dataMap = parseInitDate(initData);
-        String hash = dataMap.remove("hash");
-        String checkString = buildCheckString(dataMap);
+        String hash = initData.remove("hash");
+        String checkString = buildCheckString(initData);
         if (!verifyTelegramSignature(botToken, checkString, hash)) {
             throw new SecurityException("Invalid Telegram initData...");
         }
-        return dataMap;
-    }
-
-    // Превращаем строку в форму { "ключ", "значение" }
-    private Map<String, String> parseInitDate(String initData) {
-        // Расшифруем полученный initData (так как мы передали его в шифрованном виде)
-        // Разделяем на части в формате - "ключ", "значение"
-        // Кладем их в map
-        // В итоге получаем множество состоящее из пар ключ-значение
-
-        Map<String, String> map = new HashMap<>();
-        String decodedInitData = URLDecoder.decode(initData, StandardCharsets.UTF_8);
-        String[] parts = decodedInitData.split("&");
-        for (String part : parts) {
-            String[] kv = part.split("=", 2);
-            if (kv.length == 2) {
-                map.put(kv[0], kv[1]);
-            }
-        }
-        return map;
+        return initData;
     }
 
     // Вспомогательный метод по созданию необхожимой строки для проверки на валидность
@@ -86,7 +64,10 @@ public class TelegramAuthService {
         // Переводим байт код в hex (шестнадцатеричный), так как телеграм предоставляет нам hash в таком формате
 
         try {
-            SecretKeySpec keySpec = new SecretKeySpec(botToken.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] key = digest.digest(botToken.getBytes(StandardCharsets.UTF_8));
+            SecretKeySpec keySpec = new SecretKeySpec(key, "HmacSHA256");
+
             Mac mac = Mac.getInstance("HmacSHA256");
             mac.init(keySpec);
             byte[] hmacBytes = mac.doFinal(checkString.getBytes(StandardCharsets.UTF_8));

@@ -6,21 +6,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/auth")
+@RequestMapping()
 @RequiredArgsConstructor
 public class TelegramAuthController {
     private final TelegramAuthService telegramAuthService;
-    @PostMapping("/telegram")
-    public ResponseEntity<TelegramUser> authenticateWithTelegram(@RequestParam String initData) {
+    @PostMapping("/auth/telegram")
+    public ResponseEntity<TelegramUser> authenticateWithTelegram(@RequestBody Map<String, String> initData) {
         try {
             log.info(">> Получено initData: {}", initData);
             Map<String, String> userData = telegramAuthService.parseAndValidateInitData(initData);

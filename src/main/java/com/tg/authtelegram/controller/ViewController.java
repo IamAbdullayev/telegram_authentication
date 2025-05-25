@@ -3,9 +3,9 @@ package com.tg.authtelegram.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@Controller("/")
+@Controller
 public class ViewController {
-    @GetMapping
+    @GetMapping("/")
     public String indexPage() {
         return "telegram";
     }
