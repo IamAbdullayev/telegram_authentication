@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Telegram WebApp Authentication</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .user-info { margin-top: 20px; }
+        .user-info div { margin-bottom: 8px; }
+    </style>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+<h1>Добро пожаловать в Telegram WebApp</h1>
+
+<div id="status">Идет инициализация...</div>
+
+<div class="user-info" id="user-info" style="display:none;">
+    <h2>Ваши данные:</h2>
+    <div><strong>ID:</strong> <span id="user-id"></span></div>
+    <div><strong>Имя:</strong> <span id="user-firstname"></span></div>
+    <div><strong>Фамилия:</strong> <span id="user-lastname"></span></div>
+    <div><strong>Username:</strong> <span id="user-username"></span></div>
+</div>
+
+<script>
+    // Проверяем, что мы в Telegram WebApp
+    if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        const initData = tg.initData;
+        console.log("Init Data", initData);
+
+        if (!initData) {
+            document.getElementById('status').textContent = 'Ошибка: initData не получены';
+        } else {
+            document.getElementById('status').textContent = 'Отправляем данные на сервер...';
+
+            // Отправляем initData на сервер для проверки и получения user info
+            fetch('/auth/telegram', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    initData: initData
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.id) {
+                    document.getElementById('status').style.display = 'none';
+                    document.getElementById('user-info').style.display = 'block';
+
+                    document.getElementById('user-id').textContent = data.id;
+                    document.getElementById('user-firstname').textContent = data.first_name || '';
+                    document.getElementById('user-lastname').textContent = data.last_name || '';
+                    document.getElementById('user-username').textContent = data.username || '';
+                } else {
+                    document.getElementById('status').textContent = 'Ошибка аутентификации: ' + data.message;
+                }
+            })
+            .catch(err => {
+                document.getElementById('status').textContent = 'Ошибка запроса к серверу: ' + err;
+            });
+        }
+    } else {
+        document.getElementById('status').textContent = 'Это приложение должно запускаться внутри Telegram WebApp.';
+    }
+</script>
+
+</body>
+</html>

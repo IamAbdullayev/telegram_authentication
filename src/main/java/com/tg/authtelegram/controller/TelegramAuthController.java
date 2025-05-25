@@ -17,11 +17,13 @@ import java.util.Map;
 public class TelegramAuthController {
     private final TelegramAuthService telegramAuthService;
     @PostMapping("/auth/telegram")
-    public ResponseEntity<TelegramUser> authenticateWithTelegram(@RequestBody Map<String, String> initData) {
+    public ResponseEntity<TelegramUser> authenticateWithTelegram(@RequestParam("initData") String initData) {
         try {
             log.info(">> Получено initData: {}", initData);
             Map<String, String> userData = telegramAuthService.parseAndValidateInitData(initData);
             TelegramUser user = telegramAuthService.saveUserIfNotExists(userData);
+
+            log.info("Response (user): {}", user);
             return ResponseEntity.ok(user);
         } catch (SecurityException e) {
             log.error("SecurityException: ", e);

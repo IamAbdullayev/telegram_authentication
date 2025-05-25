@@ -28,7 +28,7 @@
     </scm>
     <properties>
         <java.version>24</java.version>
-        <telegrambots.version>8.3.0</telegrambots.version>
+        <telegrambots.version>6.8.0</telegrambots.version>
     </properties>
     <dependencies>
         <dependency>
@@ -68,15 +68,9 @@
         <!-- telegram bot -->
         <dependency>
             <groupId>org.telegram</groupId>
-            <artifactId>telegrambots-longpolling</artifactId>
+            <artifactId>telegrambots</artifactId>
             <version>${telegrambots.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots-client</artifactId>
-            <version>${telegrambots.version}</version>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -84,6 +78,15 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>24</source>
+                    <target>24</target>
+                    <compilerArgs>--enable-preview</compilerArgs>
+                </configuration>
             </plugin>
         </plugins>
     </build>
