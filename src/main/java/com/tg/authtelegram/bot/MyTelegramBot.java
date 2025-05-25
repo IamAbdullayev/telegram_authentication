@@ -55,7 +55,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
         // Указываем URL WebApp
         // Это URL должен быть HTTPS и вести на твое приложение
-        webAppButton.setWebApp(new WebAppInfo("https://7b30-37-61-120-53.ngrok-free.app"));
+        webAppButton.setWebApp(new WebAppInfo("https://telegram-authentication.onrender.com"));
 
         // Клавиатура с одной кнопкой
         List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
