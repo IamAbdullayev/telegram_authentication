@@ -1,5 +1,6 @@
 package com.tg.authtelegram.service;
 
+import com.tg.authtelegram.model.TelegramUser;
 import com.tg.authtelegram.repository.TelegramUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -104,5 +105,28 @@ public class TelegramAuthService {
             stringBuilder.append(String.format("%02x", b));
         }
         return stringBuilder.toString();
+    }
+
+
+    // Метод для сохранения в базу данных (елсли его нет там)
+    public TelegramUser saveUserIfNotExists(Map<String, String> userData) {
+        String telegramId = userData.get("id");
+        if (telegramId == null) {
+            throw new IllegalArgumentException("Telegram ID пропущен!");
+        }
+
+        Long id = Long.parseLong(userData.get("id"));
+
+        return telegramUserRepository.findById(id)
+                .orElseGet(() -> {
+                    TelegramUser user = new TelegramUser(
+                            id,
+                            userData.get("first_name"),
+                            userData.get("last_name"),
+                            userData.get("username"),
+                            userData.get("photo_url")
+                    );
+                    return telegramUserRepository.save(user);
+                });
     }
 }
